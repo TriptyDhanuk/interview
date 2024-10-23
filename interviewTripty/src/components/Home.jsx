@@ -78,7 +78,7 @@ const Home = () => {
                                         </TableCell>
                                         <TableCell>{employee.age}</TableCell>
                                         <TableCell>{employee.salary}</TableCell>
-                                        <TableCell style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', whiteSpace: 'nowrap' }}>
+                                        <TableCell style={{justifyContent: 'space-between', alignItems: 'center', whiteSpace: 'nowrap' }}>
                                             <Link to={`/update/${employee.id}`}>
                                                 <Button variant="contained" color="primary" size="small">
                                                     Edit
