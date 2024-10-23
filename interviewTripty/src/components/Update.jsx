@@ -84,7 +84,17 @@ const Update = () => {
 
     return (
         <Container maxWidth="sm">
-            <Typography variant="h4" gutterBottom align="center">Update Employee</Typography>
+             <h2 style={{
+                textAlign: 'left',
+                fontSize: '2rem',
+                fontWeight: 'bold',
+                color: '#3ba7f2',
+                margin: '20px 0',
+                textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
+                letterSpacing: '1px'
+            }}>
+               ADD EMPLOYEE
+            </h2>
             <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }}>
                 <TextField
                     label="Full Name"

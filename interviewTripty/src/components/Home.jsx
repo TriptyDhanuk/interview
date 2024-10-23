@@ -28,7 +28,7 @@ const Home = () => {
     
 
     return (
-        <>
+        <div >
             <h2 style={{
                 textAlign: 'center',
                 fontSize: '2rem',
@@ -49,38 +49,39 @@ const Home = () => {
             <br /><br />
             {status === 'loading' && <p>Loading...</p>}
             {status === 'failed' && <p>Error: {error}</p>}
+            <div style={{justifyContent:"center",padding:"20px"}}>
             <TableContainer component={Paper}>
-                <Table>
+            <Table style={{ border: "1.5px dashed purple", borderCollapse: "collapse" }}>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Id</TableCell>
-                            <TableCell>Full Name</TableCell>
-                            <TableCell>Email</TableCell>
-                            <TableCell>Phone</TableCell>
-                            <TableCell>Image</TableCell>
-                            <TableCell>Age</TableCell>
-                            <TableCell>Salary</TableCell>
-                            <TableCell align="center">Action</TableCell>
+                            <TableCell style={{ fontWeight: "bold" }}>Id</TableCell>
+                            <TableCell style={{ fontWeight: "bold" }}>Full Name</TableCell>
+                            <TableCell style={{ fontWeight: "bold" }}>Email</TableCell>
+                            <TableCell style={{ fontWeight: "bold" }}>Phone</TableCell>
+                            <TableCell style={{ fontWeight: "bold" }}>Image</TableCell>
+                            <TableCell style={{ fontWeight: "bold" }}>Age</TableCell>
+                            <TableCell style={{ fontWeight: "bold" }}>Salary</TableCell>
+                            <TableCell style={{ fontWeight: "bold" }} align="center">Action</TableCell>
                         </TableRow>
-                    </TableHead>
-                    <TableBody>
+                    </TableHead >
+                    <TableBody  >
                         {employees.length > 0 ? (
                             employees.map((employee) => (
-                                <TableRow key={employee.id}>
-                                    <TableCell>{employee.id}</TableCell>
+                                <TableRow key={employee.id} >
+                                    <TableCell >{employee.id}</TableCell>
                                     <TableCell>{employee.fullName}</TableCell>
                                     <TableCell>{employee.email}</TableCell>
-                                    <TableCell>{employee.phone}</TableCell>
+                                    <TableCell>{employee.phone.slice(0, 10)}</TableCell>
+
                                     <TableCell>
                                     <a href={employee.image} target="_blank" rel="noopener noreferrer">
                                             {truncate(employee.image, 20)} 
                                         </a>
-                                       <br></br>
-                                        <img src={employee.image} alt={employee.fullName} style={{ width: '50px', height: '50px' }} />
+                                       
                                     </TableCell>
                                     <TableCell>{employee.age}</TableCell>
                                     <TableCell>{employee.salary}</TableCell>
-                                    <TableCell align="right">
+                                    <TableCell style={{display:'flex',flexDirection:"row"}}>
                                         <Link to={`/update/${employee.id}`}>
                                             <Button variant="contained" color="primary" size="small">
                                                 Edit
@@ -105,7 +106,8 @@ const Home = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
-        </>
+            </div>
+        </div>
     );
 };
 
