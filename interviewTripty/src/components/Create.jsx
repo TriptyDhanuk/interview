@@ -7,30 +7,39 @@ import {
   Button,
   Grid,
   Paper,
-  Typography,
   Snackbar,
   Alert,
+  CircularProgress,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
+const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dlytzaibn/image/upload";
+const CLOUDINARY_UPLOAD_PRESET = "l5w5rytn"; 
 
 export default function Create() {
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
+  const navigate = useNavigate(); 
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     phone: "",
-    image: "",
+    image: null,
     age: "",
     salary: "",
   });
-
-  const [openSnackbar, setOpenSnackbar] = useState(false); 
+  
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [loading, setLoading] = useState(false); // Loading state
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, files } = e.target;
 
-    // For phone input, limit to 10 digits
-    if (name === "phone") {
-      // Allow only digits and restrict length to 10
+    if (type === "file") {
+      setFormData({
+        ...formData,
+        [name]: files[0],
+      });
+    } else if (name === "phone") {
       if (/^\d{0,10}$/.test(value)) {
         setFormData({
           ...formData,
@@ -45,31 +54,59 @@ export default function Create() {
     }
   };
 
+  const uploadImage = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+    const response = await axios.post(CLOUDINARY_URL, formData);
+    return response.data.secure_url; 
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Set loading to true
 
     try {
-      const response = await axios.post('https://interviewtesting.onrender.com/v1/users/employee/create', formData);
-      console.log('Response:', response.data);
+      let imageUrl = null;
+      if (formData.image) {
+        imageUrl = await uploadImage(formData.image); 
+      }
 
+      const dataToSend = {
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        age: formData.age,
+        salary: formData.salary,
+        image: imageUrl, 
+      };
+
+      const response = await axios.post('https://interviewtesting.onrender.com/v1/users/employee/create', dataToSend);
+      console.log('Response:', response.data);
       dispatch(addEmployee(response.data));
       setOpenSnackbar(true); 
-      
       setFormData({
         fullName: "",
         email: "",
         phone: "",
-        image: "",
+        image: null,
         age: "",
         salary: "",
       });
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('Error submitting form:', error.response ? error.response.data : error.message);
+    } finally {
+      setLoading(false); // Reset loading state
     }
   };
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false); 
+  };
+
+  const handleGoBack = () => {
+    navigate("/"); // Redirect to home
   };
 
   return (
@@ -116,17 +153,50 @@ export default function Create() {
               value={formData.phone}
               onChange={handleChange}
               required
-              inputProps={{ maxLength: 10 }} // Limit input length to 10
+              inputProps={{ maxLength: 10 }} 
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Image URL"
-              name="image"
-              value={formData.image}
-              onChange={handleChange}
-            />
+            <div style={{
+              border: '1px solid grey',
+              borderRadius: '4px',
+              padding: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              cursor: 'pointer',
+            }}>
+              <label htmlFor="image-upload" style={{
+                color: "gray",
+                marginRight: "20px",
+                fontWeight: 'bold',
+                display: 'block',
+              }}>
+                Upload Your Image:
+              </label>
+              
+              <input
+                style={{ display: "none" }}
+                id="image-upload"
+                type="file"
+                name="image"
+                accept="image/*"
+                onChange={handleChange}
+                required
+              />
+              
+              <Button 
+                variant="contained" 
+                component="span" 
+                style={{ backgroundColor: "#040404", color: "white", marginRight: '10px' }} 
+                onClick={() => document.getElementById('image-upload').click()} 
+              >
+                Upload Image
+              </Button>
+
+              {/* Display the name of the uploaded file */}
+              {formData.image && <span style={{ marginLeft: '10px' }}>{formData.image.name}</span>}
+            </div>
           </Grid>
           <Grid item xs={12}>
             <TextField
@@ -151,12 +221,13 @@ export default function Create() {
             />
           </Grid>
           <Grid item xs={12}>
-            <Button variant="contained" style={{ backgroundColor: "green" }} type="submit">
-              Submit
+            <Button variant="contained" style={{ backgroundColor: "green" }} type="submit" disabled={loading}>
+              {loading ? <CircularProgress size={24} color="inherit" /> : "Submit"}
             </Button>
-           
+            <Button variant="outlined" style={{ marginLeft: '10px' }} onClick={handleGoBack}>
+              Go Back
+            </Button>
           </Grid>
-          
         </Grid>
       </form>
 
