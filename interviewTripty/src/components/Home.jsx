@@ -16,11 +16,7 @@ const Home = () => {
 
         fetchData();
 
-        // Cleanup function if needed
-        return () => {
-            // Perform any cleanup if necessary
-        };
-    }, [dispatch, location.key]); // Trigger refetch when the page key changes
+    }, [dispatch, location.key]); 
 
     const handleDelete = (id) => {
         if (window.confirm("Are you sure you want to delete this employee?")) {
@@ -77,12 +73,12 @@ const Home = () => {
                                             <img
                                                 src={employee.image}
                                                 alt={employee.fullName}
-                                                style={{ width: '50px', height: '40px' }}
+                                                style={{ width: '50px', height: '35px' }}
                                             />
                                         </TableCell>
                                         <TableCell>{employee.age}</TableCell>
                                         <TableCell>{employee.salary}</TableCell>
-                                        <TableCell style={{ display: 'flex', flexDirection: "row" }}>
+                                        <TableCell style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', whiteSpace: 'nowrap' }}>
                                             <Link to={`/update/${employee.id}`}>
                                                 <Button variant="contained" color="primary" size="small">
                                                     Edit

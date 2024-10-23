@@ -29,7 +29,7 @@ export default function Create() {
   });
   
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false); 
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -41,6 +41,14 @@ export default function Create() {
       });
     } else if (name === "phone") {
       if (/^\d{0,10}$/.test(value)) {
+        setFormData({
+          ...formData,
+          [name]: value,
+        });
+      }
+    } else if (name === "age") {
+      
+      if (/^\d{0,2}$/.test(value)) {
         setFormData({
           ...formData,
           [name]: value,
@@ -65,7 +73,7 @@ export default function Create() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Set loading to true
+    setLoading(true); 
 
     try {
       let imageUrl = null;
@@ -97,7 +105,7 @@ export default function Create() {
     } catch (error) {
       console.error('Error submitting form:', error.response ? error.response.data : error.message);
     } finally {
-      setLoading(false); // Reset loading state
+      setLoading(false); 
     }
   };
 
@@ -106,7 +114,8 @@ export default function Create() {
   };
 
   const handleGoBack = () => {
-    navigate("/"); // Redirect to home
+    navigate("/"); 
+    window.location.reload(); 
   };
 
   return (
@@ -194,7 +203,6 @@ export default function Create() {
                 Upload Image
               </Button>
 
-              {/* Display the name of the uploaded file */}
               {formData.image && <span style={{ marginLeft: '10px' }}>{formData.image.name}</span>}
             </div>
           </Grid>
